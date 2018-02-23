@@ -1,0 +1,756 @@
+\documentclass{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{fullpage}
+
+\newtheorem*{theoreme}{Théorème}
+\newtheorem*{algorithme}{Algorithme}
+
+\theoremstyle{remark}
+\newtheorem*{remarques}{Remarques}
+
+\title{Memento de Programmation Non-Linéaire}
+\author{Emmanuel Rachelson}
+\date{2008}
+
+\begin{document}
+
+\maketitle
+
+\section{Problème de PNL}
+
+On considère des fonctions $f$, $g_i$ ($i\in [1,q]$) et $h_j$ ($j\in [1,p]$) de
+$\mathbb{R}^n$ dans $\mathbb{R}$, continues, différentiables deux fois. Résoudre
+le problème de Programmation Non-Linéaire $\left(P_\Omega\right)$ associé à ces fonctions,
+c'est trouver $\hat{x}\in\mathbb{R}^n$ tel que :
+\begin{gather*}
+f(x) = \min\limits_{x\in \Omega} f(x)\\
+\Omega = \left\{ x\in \mathbb{R}^n / \forall i\in [1,q], g_i(x)=0, \forall j\in
+[1,p], h_j(x) \leq 0 \right\}
+\end{gather*}
+Ce problème correspond à chercher le minimum de la fonction $f$ dans le domaine
+défini par les contraintes $g_i$ et $h_j$. La fonction $f$ est appelée \emph{fonction
+objectif}, les $g_i$ sont des \emph{contraintes égalité}, les $h_j$ des
+\emph{contraintes inégalité}. On note $g$ la fonction de $\mathbb{R}^n$ dans
+$\mathbb{R}^q$ qui à $x$ associe le vecteur des $g_i(x)$. De même, $h(x)$ est le
+vecteur des $h_j(x)$.
+
+\section{Théorèmes}
+
+\subsection{Optimisation sans contraintes}
+
+En l'absence de contraintes, les minima de $f$ peuvent être trouvés via les
+conditions du premier et second ordre :
+
+\begin{theoreme}[Condition du premier ordre]
+$\hat{x}$ solution locale de $\left(P_{\mathbb{R}^n}\right)$ $\Rightarrow$
+$\frac{\partial f}{\partial x}(\hat{x}) = 0$
+\end{theoreme}
+
+\begin{theoreme}[Condition du second ordre]
+\begin{math}
+\left.
+\begin{array}{l}
+\frac{\partial f}{\partial x}(\hat{x})=0\\
+\frac{\partial^2 f}{\partial x^2}(\hat{x}) \textrm{ définie positive}
+\end{array}\right\} \Leftrightarrow \hat{x} \textrm{ solution locale de
+}\left(P_{\mathbb{R}^n}\right)
+\end{math}
+\end{theoreme}
+
+\begin{remarques}~
+\begin{itemize}
+  \item $\frac{\partial f}{\partial x}(\hat{x})$ est le \emph{gradient}, ou matrice
+  \emph{Jacobienne} de $f$ en $\hat{x}$.
+  \item $\frac{\partial^2 f}{\partial x^2}(\hat{x})$ est la matrice Hessienne ou
+  Hessien de $f$ en $\hat{x}$.
+  \item La condition du premier ordre est une condition nécessaire.
+  \item La condition du second ordre est nécessaire et suffisante.
+  \item Si $f$ strictement convexe sur $\mathbb{R}^n$, alors la condition du
+  premier ordre est condition suffisante.
+\end{itemize}
+\end{remarques}
+
+\subsection{Cas des ensembles ouverts}
+\begin{theoreme}
+Soit $\Omega$ un ouvert de $\mathbb{R}^n$ : $\hat{x}$ solution de
+$\left(P_\Omega \right)$ $\Leftrightarrow$ 
+\begin{math}
+\left\{
+\begin{array}{c}
+\hat{x}\in\Omega\\
+\hat{x}\textrm{ solution de }(P_{\mathbb{R}^n})
+\end{array}\right.
+\end{math}
+\end{theoreme}
+
+\subsection{Théorème de Lagrange}
+
+On ne considère que des contraintes égalité. On introduit l'opérateur
+\emph{Lagrangien} :\\
+\begin{equation*}
+\forall (x,\lambda)\in \mathbb{R}^n \times \mathbb{R}^q, L(x,\lambda) = f(x) +
+\sum\limits_{i=1}^q \lambda_i g_i(x) = f(x) + \lambda^T g(x)
+\end{equation*}
+
+\noindent On introduit également la notion de \emph{direction admissible} en
+$x$. On dit que $v\in\mathbb{R}^n$ est admissible en $x$ si et seulement si :
+\begin{equation*}
+\exists \phi \in C^1(\mathbb{R}^+,\mathbb{R}^n) /
+\left\{ \begin{array}{c} \phi(0)=\hat{x} \\ \phi'(0)=v \\ \phi(t) \in \Omega
+\textrm{ pour }t\textrm{ petit} \end{array}\right.
+\end{equation*}
+On note $\mathcal{D}_{\hat{x}}(\Omega)$ l'ensemble des directions admissibles en
+$\hat{x}$.
+
+\begin{remarques}~
+\begin{itemize}
+  \item Une direction admissible est une direction ``dans laquelle on peut se
+déplacer sans sortir du domaine''.
+  \item Pour des contraintes égalité, $\mathcal{D}_{\hat{x}}(\Omega) = \ker 
+  \left[ \frac{\partial g}{\partial x}(\hat{x}) \right] = \left\{ v\in
+  \mathbb{R}^n / \frac{\partial g}{\partial x}(\hat{x}) \cdot v = 0 \right\}$.
+\end{itemize}
+\end{remarques}
+
+\begin{theoreme}[Théorème de Lagrange]
+Si la famille des $\left\{ \frac{\partial g_i}{\partial x}(\hat{x}), i\in
+[1,q] \right\}$ est une famille libre alors:
+\begin{equation*}
+\exists \hat{\lambda}\in\mathbb{R}^q \ / \
+\left\{
+\begin{array}{c}
+\frac{\partial L}{\partial x}(\hat{x},\hat{\lambda})=0 \\
+\forall v\in\mathcal{D}_{\hat{x}}(\Omega)\setminus\{0\}, v^T \frac{\partial^2
+L}{\partial x^2}(\hat{x},\hat{\lambda}) v > 0 
+\end{array}
+\right\} \Leftrightarrow \hat{x} \textrm{ est solution locale de }
+\left(P_\Omega\right)
+\end{equation*}
+\end{theoreme}
+
+\begin{remarques}~
+\begin{itemize}
+  \item La condition ``$\left\{ \frac{\partial g_i}{\partial x}(\hat{x}), i\in
+[1,q] \right\}$ forme une famille libre'' se nomme \emph{régularité des
+contraintes égalité} (on dit alors que les contraintes sont régulières).
+  \item Les contraintes sont régulières si et seulement si $\frac{\partial
+  g}{\partial x}(\hat{x})$ est de rang $q$.
+  \item Comme dans le cas sans contraintes, on peut décomposer le théorème de
+  Lagrange en une condition nécessaire du premier ordre et une condition
+  suffisante du second ordre.
+  \item Les éléments $\lambda_i$ s'appellent \emph{paramètres de Lagrange}.
+\end{itemize}
+\end{remarques}
+
+\subsection{Théorème de Karush-Kuhn-Tucker}
+
+On considère maintenant le cas général avec contraintes égalité et inégalité. Le
+Lagrangien s'écrit :
+\begin{equation*}
+\forall (x,\lambda,\mu)\in \mathbb{R}^n \times \mathbb{R}^q\times\mathbb{R}^p, 
+L(x,\lambda,\mu) = f(x) +
+\sum\limits_{i=1}^q \lambda_i g_i(x) + \sum\limits_{j=0}^p \mu_jh_j(x) = f(x) +
+\lambda^T g(x) + \mu^T h(x)
+\end{equation*}
+
+\noindent Si on a $h_j(\hat{x})=0$, alors on dit que la contrainte $h_j$ est
+\emph{active} ou \emph{saturée} en $\hat{x}$. On note $\mathcal{A}(\hat{x})$
+l'ensemble des indices des contraintes saturées en $\hat{x}$.
+
+\begin{theoreme}[Théorème de KKT]
+Si la famille des $\left\{ \frac{\partial g_i}{\partial x}(\hat{x}), i\in
+[1,q] \right\} \cup \left\{ \frac{\partial h_j}{\partial x}(\hat{x}), j\in
+\mathcal{A}(\hat{x}) \right\}$ est une famille libre alors :
+\begin{equation*}
+\exists (\hat{\lambda},\hat{\mu}) \in \mathbb{R}^q \times {\mathbb{R}^+}^p \ / \
+\left\{
+\begin{array}{c}
+\frac{\partial L}{\partial x}(\hat{x},\hat{\lambda},\hat{\mu})=0 \\
+\forall j\in[1,p], \hat{\mu}_j h_j(\hat{x}) = 0\\
+\forall v\in \mathcal{D}_{\hat{x}}(\Omega)\setminus\{0\}, v^T \frac{\partial^2
+L}{\partial x^2}(\hat{x},\hat{\lambda},\hat{\mu}) v > 0 
+\end{array}
+\right\} \Leftrightarrow \hat{x} \textrm{ est solution locale de } 
+\left(P_\Omega\right)
+\end{equation*}
+\end{theoreme}
+
+\begin{remarques}~
+\begin{itemize}
+  \item La condition ``$\left\{ \frac{\partial g_i}{\partial x}(\hat{x}), i\in
+[1,q] \right\} \cup \left\{ \frac{\partial h_j}{\partial x}(\hat{x}), j\in
+\mathcal{A}(\hat{x}) \right\}$ forme une famille libre'' se nomme
+\emph{qualification des
+contraintes}. On dit que les contraintes sont \emph{qualifiées}. Il existe un
+théorème de qualification plus général qui sort du cadre de ce cours.
+  \item Si les $\left\{g_i, i\in [1,q]\right\} \cup \left\{ h_j,
+  j\in\mathcal{A}(\hat{x}) \right\}$ sont affines et distinctes, alors les
+  contraintes sont qualifiées.
+  \item Comme dans le cas sans contraintes, on peut décomposer le théorème de
+  KKT en une condition nécessaire du premier ordre et une condition
+  suffisante du second ordre.
+  \item Attention, les $\hat{\mu}_j$ appartiennent à $\mathbb{R}^+$.
+  \item Les éléments $\mu_j$ s'appellent \emph{paramètres de Karush-Kuhn-Tucker}
+  (parfois raccourci en \emph{paramètres de Kuhn et Tucker}).
+  \item Un pont facile entre théorème de Lagrange et théorème de
+  Karush-Kuhn-Tucker revient à considérer toute contrainte égalité $g_i(x)=0$ 
+  comme deux contraintes inégalité $g_i(x)\leq 0$ et $g_i(x)\geq 0$. Attention
+  toutefois aux raccourcis trop rapides : en un point qui respecte les
+  contraintes, ces dernières ne sont plus qualifiées puisque la famille
+  des gradients de contraintes contient $\nabla g_i$ et $-\nabla g_i$ (la
+  famille des gradients des contraintes n'est pas libre). On peut s'en sortir en
+  n'introduisant qu'une fois la contrainte $g_i$ dans le Lagrangien sans pouvoir
+  décider du signe du $\mu_i$ associé et on retombe alors \ldots sur le théorème
+  de Lagrange. 
+\end{itemize}
+\end{remarques}
+
+\subsection{Dualité}
+
+On se place dans le cas de contraintes inégalité. On introduit le problème
+primal associé à $\left(P_\Omega\right)$ comme la recherche de :
+\begin{equation*}
+\inf\limits_{x\in \mathbb{R}^n} \sup\limits_{\mu \geq 0} L(x,\mu)
+\end{equation*}
+\noindent Ainsi que le problème dual comme la recherche de :
+\begin{equation*}
+\sup\limits_{\mu \geq 0} \inf\limits_{x\in \mathbb{R}^n} L(x,\mu)
+\end{equation*}
+On a alors le théorème de la dualité :
+\begin{theoreme}[Dualité]On suppose les contraintes qualifiées en $\hat{x}$ et
+les $f$ et $(h_j)_{j\in[1,p]}$ convexes.
+\begin{center}
+\begin{math}
+\begin{array}{ll}
+\hat{x} \textrm{ solution locale de } \left(P_\Omega\right) & \Leftrightarrow
+\exists \hat{\mu}\in{\mathbb{R}^+}^p \ / \ (\hat{x},\hat{\mu}) \textrm{ solution
+du problème primal}\\
+ &\Leftrightarrow \exists \hat{\mu}\in{\mathbb{R}^+}^p \ / \ (\hat{x},\hat{\mu})
+\textrm{ solution du problème dual}
+\end{array}
+\end{math}
+\end{center}
+En d'autres termes:
+\begin{center} $\hat{x}$ est solution de $\left(P_\Omega\right)$
+avec les paramètres de KKT $\hat{\mu}$ $\Leftrightarrow$ $(\hat{x},\hat{\mu})$
+est un point selle du Lagrangien de $\left(P_\Omega\right)$.
+\end{center}
+\end{theoreme}
+
+\noindent Il existe une version du théorème de la dualité qui prend en compte
+les contraintes égalité. Bien qu'elle ne rajoute pas de difficulté par rapport à
+celle présentée ci-dessus, on ne l'abordera pas.
+\pagebreak
+\section{En pratique}
+
+\subsection{Résoudre en utilisant le théorème de KKT}
+
+On part du problème:
+\begin{center}
+\begin{math}
+\left( P_\Omega \right) \ : \ \left\{ \begin{array}{c}
+\min\limits_{x\in\mathbb{R}^n} f(x)\\
+\forall i\in [1,q], g_i(x) = 0\\
+\forall j\in [1,p], h_j(x) \leq 0\\
+\forall k\in [1,l], m_k(x) < 0
+\end{array} \right.
+\end{math}
+\end{center}
+
+\begin{enumerate}
+  \item On néglige les $m_k$ en utilisant le théorème d'optimisation sur les
+  ouverts. Il faudra vérifier \emph{a posteriori} que la solution trouvée est
+  bien dans l'ouvert défini par les $m_k$.
+  \item On montre que les contraintes $g_i$ et $h_j$ sont qualifiées.
+  \item On écrit le Lagrangien.
+  \item On dérive le Lagrangien et on résout le système de $n+p+q$ équations à
+  $n+p+q$ inconnues :
+\begin{equation*}
+\begin{array}{c}
+\frac{\partial L}{\partial x}(x,\lambda,\mu)=0 \\
+\forall i\in[1,q], g_i(x) = 0\\
+\forall j\in[1,p], \mu_j h_j(x) = 0\\
+\end{array}
+\end{equation*}
+La résolution de ce système est probablement l'étape la plus fastidieuse de la
+méthode puisqu'elle impose de traiter tous les cas de ``$\mu_j = 0$ ou
+$h_j(x)=0$'' découlant des équations ``$\mu_j h_j(x) = 0$''. Il est souvent
+pertinent de chercher une solution pour tous les $\mu_j$ nuls (aucune hypothèse
+sur la saturation des contraintes) et de progresser en les saturant au fur et à
+mesure mais ce n'est en aucun cas une règle d'or. Bien poser les calculs pour
+regrouper les cas est souvent utile.\\
+Cette résolution au premier ordre fournit un ensemble de points
+$\{(\hat{x},\hat{\lambda},\hat{\mu})\}$ parmi lesquels figurent nécessairement
+les optima de la fonction.
+  \item En chacun des $(\hat{x},\hat{\lambda},\hat{\mu})$, on vérifie si 
+$\forall v\in \mathcal{D}_{\hat{x}}(\Omega)\setminus\{0\}, v^T \frac{\partial^2
+L}{\partial x^2}(\hat{x},\hat{\lambda},\hat{\mu}) v > 0$. Généralement, on
+essaie de le montrer pour tout $v$ de $\mathbb{R}^n$, puis, si on n'y arrive
+pas, on regarde le cas $v\in \mathcal{D}_{\hat{x}}(\Omega)\setminus\{0\}$ ou on
+cherche à montrer que c'est faux (faire un dessin aide souvent !).
+  \item On vérifie que les $(\hat{x},\hat{\lambda},\hat{\mu})$ restants 
+  satisfont les contraintes $m_k$.
+  \item Les points $(\hat{x},\hat{\lambda},\hat{\mu})$ sont alors des minima
+  locaux de $f$ qui satisfont toutes les contraintes. On peut chercher le
+  minimum global en les comparant entre eux.
+\end{enumerate}
+
+\begin{remarques}~
+\begin{itemize}
+  \item Attention, le fait qu'on cherche des $\mu_j$ positifs ou nuls vient du
+  fait qu'on a écrit le problème sous la forme de contraintes inégalité
+  ``inférieur ou égal''. Si l'on change le sens de ces contraintes, le signe des
+  $\mu_j$ change. Afin d'eviter les erreurs d'étourderie ou les confusions, il
+  est préférable de toujours écrire les problèmes de la même façon, \emph{ie.}
+  les contraintes égalité ``$=0$'' et les inégalité ``$\leq 0$''.
+  \item De même, le fait qu'on cherche un $\frac{\partial^2 L}{\partial x^2}$
+  semi-défini (ou défini) positif vient du fait que l'on cherche un minimum (on
+  l'aurait cherché négatif pour un maximum). Pour éviter confusions et
+  étourderies, même chose : toujours écrire les problèmes d'optimisation comme
+  des problèmes de minimisation.
+  \item De nombreux exercices se font avec un nombre de variables réduit en $x$.
+  Certains problèmes de la vie courante aussi. Dans ces cas, là \ldots faites un
+  dessin ! Cela permet d'avoir une bonne idée de ce qu'il faut chercher
+  (notamment pour l'étape où l'on vérifie si les candidats à l'optimalité sont
+  des minima ou non). Dans d'autres cas, c'est le nombre de contraintes qui est
+  faible. Pensez alors à utiliser le théorème de la dualité et à faire de
+  nouveau un dessin pour fixer les idées. Malheureusement, ça ne marche pas
+  toujours (la plupart des problèmes réels non triviaux ont beaucoup de
+  contraintes et beaucoup de variables) mais ce serait dommage de s'en priver
+  quand on peut le faire.
+  \item Parfois, certaines contraintes égalité mènent directement à
+  l'élimination de certaines variables. Ne pas se lancer aveuglément dans les
+  calculs et prendre le temps de considérer le problème sous plusieurs aspects
+  (notamment le sens physique associé !) peut être profitable. Commencer par
+  prendre quelques minutes pour visualiser le domaine $\Omega$ et la forme de
+  la fonction $f$ est souvent un bon départ.
+\end{itemize}
+\end{remarques}
+
+\subsection{Résoudre en utilisant le théorème de la dualité}
+
+On commence avec le problème (ou on s'y ramène) :
+\begin{center}
+\begin{math}
+\left( P_\Omega \right) \ : \ \left\{ \begin{array}{c}
+\min\limits_{x\in\mathbb{R}^n} f(x)\\
+\forall j\in [1,p], h_j(x) \leq 0\\
+\end{array} \right.
+\end{math}
+\end{center}
+
+\begin{enumerate}
+  \item Vérifier que les contraintes sont qualifiées et que $f$ et les $h_j$
+  sont convexes (au moins localement et restreindre le domaine en conséquence).
+  \item Ecrire le Lagrangien.
+  \item Résoudre le problème d'optimisation sans contraintes $\inf\limits_{x\in
+  \mathbb{R}^n} L(x,\mu)$ en dérivant le Lagrangien par rapport à $x$. On
+  obtient $\hat{x}(\mu)$.
+  \item Poser la \emph{fonction duale} $\psi(\mu) = L(\hat{x}(\mu),\mu)$.
+  \item Résoudre le problème $\sup\limits_{\mu \geq 0} \psi(\mu)$ en dérivant
+  $\psi$ par rapport à $\mu$ et distinguer les cas selon le signe de $\mu$.
+\end{enumerate}
+
+\section{Programmation quadratique}
+
+Parmi les problèmes de programmation non-linéaire, la famille des problèmes de
+programmation quadratique est si souvent traitée qu'elle mérite un petit
+paragraphe. On la retrouve notamment en commande optimale, en optimisation de
+coûts économiques, en dimensionnement de structures, etc. Un problème de
+programmation
+quadratique correspond souvent à la minimisation d'une grandeur homogène à une
+énergie sous des contraintes de conception délimitant les bornes physiques des
+paramètres.\\
+
+Avec $Q\in\mathbb{R}^{n\times n}$, $b$ et $a_j\in\mathbb{R}^n$, $k$ et $c_j\in
+\mathbb{R}$, on pose $f(x) = \frac{1}{2}x^T Q x + b^Tx +k$ et $h_j(x) = a_j^Tx +c_j$.
+Résoudre le problème de minimisation de $f$ sous les contraintes $h_j(x)\leq 0$
+est la forme générale du problème de programmation quadratique.
+\begin{gather*}
+\min\limits_{x\in\mathbb{R}^n} \frac{1}{2}x^T Q x + b^Tx +k\\
+a_j^Tx +c_j \leq 0
+\end{gather*}
+
+La résolution s'effectue facilement en appliquant le théorème de KKT. 
+\begin{remarques}~
+\begin{itemize}
+  \item Les contraintes sont immédiatement qualifiées si les couples $(a_j, c_j)$
+  sont distincts deux à deux.
+  \item Le gradient du Lagrangien en $x$ vaut $Qx+b+\sum\limits_{j=1}^q a_i$
+  \item Le Hessien du Lagrangien vaut (partout) $Q$.
+  \item La solution du problème sans contraintes vaut $-Q^{-1}b$ si $Q$ est
+  définie positive (donc $f$ convexe et $Q$ inversible). 
+\end{itemize}
+\end{remarques}
+
+\section{Méthodes numériques}
+
+\subsection{Optimisation sans contraintes}
+
+Deux grandes familles de méthodes :
+\begin{itemize}
+  \item Les méthodes du premier ordre qui utilisent uniquement le gradient de
+  $f$.
+  \item Les méthodes du second ordre qui nécessitent de connaître le Hessien de
+  $f$.
+\end{itemize}
+
+Autour du minimum $\hat{x}$, on a :
+\begin{equation*}
+f(x) \simeq f(\hat{x}) + \frac{1}{2}\left(x-\hat{x}\right)^T \frac{\partial^2
+f}{\partial x^2}(\hat{x}) \left(x-\hat{x}\right) 
+\end{equation*}
+La vitesse de convergence des méthodes numériques peut donc être raisonnablement
+évaluée sur la base des problèmes de programmation quadratique.
+
+\subsubsection{Algorithme du gradient}
+
+C'est une méthode du premier ordre qui consiste à faire des ``pas'' dans la
+direction de plus forte pente.
+
+\begin{algorithme}[Algorithme du gradient]~
+\begin{center}
+\begin{math}
+\left|
+\begin{array}{l}
+x_0\textrm{ donn\'e}\\
+\texttt{Tant que }\nabla f(x_k)\neq 0\texttt{ faire :}\\
+\quad d_k= -\nabla f(x_k)\\
+\quad t_k = \mathop{argmin}\limits_{t\in \mathbb{R}} f(x_k+t d_k)\\
+\quad x_{k+1} = x_k + t_k d_k\\
+\end{array}\right.
+\end{math}
+\end{center}
+\end{algorithme}
+
+\begin{theoreme}[Convergence de la méthode de plus forte pente] ~\\
+\begin{math}
+\left. \begin{array}{c}
+f\in C^1(\mathbb{R}^n,\mathbb{R})\\
+\lim\limits_{\|x\|\rightarrow\infty}f(x) = \infty \textrm{ (coercivité)}\\
+t_k \ / \ \forall t\in\mathbb{R} f(x_k+t_k d_k)\leq f(x_k + t d_k)
+\end{array}\right\} \Rightarrow \left\{
+\begin{array}{l}
+x_k \textrm{ bornée (donc admet des points d'accumulation).}\\
+\textrm{Ces points d'accumulation sont des extremas locaux de }f
+\end{array}\right.
+\end{math}\\
+Si en plus, $f$ est strictement convexe, alors $x_k$ converge vers l'unique
+minimum global sur $\mathbb{R}^n$.
+\end{theoreme}
+
+\begin{remarques}~
+\begin{itemize}
+  \item Deux directions de descente successives $d_k$ et $d_{k+1}$ sont
+  orthogonales.
+  \item Si on note $\alpha$ et $\beta$ respectivement la plus petite et la plus
+  grande valeur propre de la matrice $A$, alors en appliquant l'algorithme du
+  gradient au problème de programmation quadratique associé à $A$ et en notant
+  $E_k = (x_k-\hat{x})^T A (x_k-\hat{x})$ le terme d'erreur, on a :
+\begin{equation*}
+E_k \leq E_0 \left( \frac{\beta-\alpha}{\beta+\alpha} \right)^{2k}
+\end{equation*}
+On en déduit que plus la matrice $A$ est mal conditionnée (plus la fonction a
+une forme de vallée étirée), plus la convergence est mal bornée en théorie.
+  \item Il est intéressant de noter que cette borne théorique n'est qu'une borne
+  supérieure et que la convergence peut se faire plus rapidement. Pour un
+  problème quadratique en dimension deux extrêmement mal conditionné, le nombre
+  d'itération avant convergence tend vers deux. Saurez-vous expliquer pourquoi
+  ?
+\end{itemize}
+\end{remarques}
+
+\subsubsection{Méthode des gradients conjugués}
+
+L'objectif de la méthode des gradients conjugués est d'accélérer la convergence
+des méthodes de gradient en prenant des directions de descente qui dépendent
+directement du conditionnement de $A$. On dit que deux directions
+$x$ et $y$ de  $\mathbb{R}^n$ sont conjuguées par rapport à $A \in
+\mathbb{R}^{n\times n}$ si $x^T A y = 0$.
+
+\begin{algorithme}[Méthode des gradients conjugués (Hestenes-Stiefel, 1952)]~
+\begin{center}
+\begin{math}
+\left|
+\begin{array}{l}
+x_0\textrm{ donn\'e}\\
+d_0=-\nabla f(x_0)\\
+\texttt{Itération }k\\
+\quad t_k = \frac{-\left(\nabla f(x_k)\right)^T \nabla f(x_k)}{d_k^T A d_k}\\
+\quad x_{k+1} = x_k + t_k d_k\\
+\quad d_{k+1}= -\nabla f(x_{k+1}) + \frac{\|\nabla f(x_{k+1})\|^2}{\|\nabla
+f(x_k)\|^2} d_k\\
+\end{array}\right.
+\end{math}
+\end{center}
+\end{algorithme}
+
+\begin{remarques}~
+\begin{itemize}
+  \item $\forall i\neq j, d_i^T A d_j = 0$ : les directions de descentes sont
+toutes mutuellement conjuguées. 
+  \item Pour des fonctions quadratiques en dimension $n$, l'algorithme converge
+  en au plus $n$ itérations
+\end{itemize}
+\end{remarques}
+
+Dans le cas des fonctions non-quadratiques, deux variantes sont à retenir :
+\begin{algorithme}[Fletcher et Reeves, 1964]
+L'algorithme est le même, $t_k$ est obtenu en minimisant $f(x_k + t d_k)$.
+\end{algorithme}
+\begin{algorithme}[Polak et Ribière, 1969]
+On remplace la famille des $d_k$ par celle des :
+\begin{center}
+\begin{math}
+d_{k+1} = -\nabla f(x_{k+1}) + \frac{\left(\nabla f(x_{k+1})\right)^T \left(
+\nabla f(x_{k+1}) - \nabla f(x_k) \right)}{\|\nabla f(x_k)\|^2}
+\end{math}
+\end{center}
+\end{algorithme}
+
+\begin{remarques}~
+\begin{itemize}
+  \item De façon générale, la convergence de la méthode des gradients conjugués
+  est assurée si on réinitialise périodiquement la direction de descente $d_k$.
+  \item Dans le cas quadratique, les deux variantes se ramènent à l'algorithme
+  général.
+  \item C'est une méthode assez efficace et peu coûteuse : la seule grandeur à
+  évaluer est le gradient de $f$ en $x_{k+1}$ et entre deux itérations on ne
+  stocke que $(x_k, \nabla f(x_k), d_k)$.
+\end{itemize}
+\end{remarques}
+
+\subsubsection{Méthode de Newton}
+
+Plutôt que de chercher des points qui font décroître la valeur de $f$ on cherche
+des points qui annulent $\nabla f$. On pose $F(x)=\nabla f(x)$. L'idée est
+de trouve un chemin qui mène à $F(x)=0$. \\
+On a : $F(x_k+d) = F(x_k) + DF(x_k)\cdot d + o(d)$. Pour faire converger $F$
+vers 0 on prend $d$ tel que $F(x_k)+DF(x_k)\cdot d = 0$. 
+\begin{algorithme}[Méthode de Newton]~
+\begin{center}
+\begin{math}
+\left|
+\begin{array}{l}
+x_0\textrm{ donn\'e}\\
+\texttt{Itération }k\\
+\quad \textrm{Si }DF(x_k)\textrm{ inversible,
+}d_k=-\left(DF(x_k)\right)^{-1}F(x_k)\\ 
+\quad x_{k+1} = x_k + d_k
+\end{array}\right.
+\end{math}
+\end{center}
+\end{algorithme}
+
+\begin{remarques}~
+\begin{itemize}
+  \item La méthode de Newton nécessite que $f$ soit localement strictement
+  convexe pour
+  pouvoir inverser $DF(x_k)= \frac{\partial^2 f}{\partial x^2}(x_k)$.
+  \item On peut prouver localement la convergence de la méthode de Newton : \\
+Si \begin{math}
+\left\{
+\begin{array}{l}
+F\in C^1(\mathbb{R}^n,\mathbb{R}) \textrm{ (donc }f\in
+C^2(\mathbb{R}^n,\mathbb{R})\textrm{)}\\ 
+\exists \hat{x} \in \mathbb{R}^n \ / \ F(\hat{x})=0\\
+DF(\hat{x})\textrm{ inversible}\\
+DF \ L\textrm{-Lipschitzienne (}\|DF(x)-DF(x')\|\leq\|x-x'\|\textrm{)}
+\end{array}
+\right.
+\end{math}, alors :\\
+\begin{flushright}
+\begin{math}
+\exists r>0 \ / \left.\begin{array}{l}
+\forall x_0 \in \mathcal{B}_r(\hat{x})\\
+x_{k+1} = x_k - \left(DF(x_k)\right)^{-1}F(x_k)
+\end{array}\right\} \Rightarrow \left\{
+\begin{array}{l}
+x_k \in \mathcal{B}_r(\hat{x})\\
+\lim\limits_{i\rightarrow\infty}x_i = \hat{x}
+\end{array}\right.
+\end{math}
+\end{flushright}
+  \item La vitesse de diminution de l'erreur est quadratique : $\forall
+  k\in\mathbb{N}^* \|x_{k+1}-\hat{x}\| \leq c \|x_k-\hat{x}\|^2$ 
+  \item Pour une fonction $f$ quadratique, la méthode de Newton converge en une
+  unique itération.
+\end{itemize}
+\end{remarques}
+
+L'inconvénient de la méthode de Newton réside dans le calcul du Hessien
+$\frac{\partial^2 f}{\partial x^2}(x_k)$. Les méthodes de Newton approchées, ou
+algorithmes quasi-Newton, remplacent les évaluations successives de $\frac{\partial^2
+f}{\partial x^2}(x_k)$ par une suite de matrices définies positives $H_k$. Deux
+versions sont à retenir, l'algorithme DFP et l'algorithme BFGS.
+
+\begin{algorithme}[DFP : Davidson, Fletcher et Power, 1959-1963]~
+\begin{center}
+\begin{math}
+\left|
+\begin{array}{l}
+x_0\textrm{ donn\'e}\\
+H_0\textrm{ donn\'e}\\
+\texttt{Itération }k\\
+\quad d_k=-H_k F(x_k)\\
+\quad \lambda_k \texttt{ minimise } f(x_k + t d_k)\\
+\quad \Delta_k = \lambda_k d_k\\
+\quad \quad x_{k+1} = x_k + \Delta_k\\
+\quad \sigma_k = F(x_{k+1}) - F(x_k)\\
+\quad H_{k+1} = H_k + \frac{\Delta_k \Delta_k^T}{\Delta_k^T \sigma_k} - \frac{H_k
+\sigma_k \sigma_k^T H_k}{\sigma_k^T H_k\sigma_k}
+\end{array}\right.
+\end{math}
+\end{center}
+\end{algorithme}
+
+\begin{algorithme}[BFGS : Broyden, Fletcher, Goldfarb, Shannon, 1969-1970]
+Comme DFP, mais on prend :
+\begin{center}
+\begin{math}
+H_{k+1} = H_k + \left( 1+ \frac{\sigma_k^T H_k
+\sigma_k}{\sigma_k^T\Delta_k} \right)
+\frac{\Delta_k\Delta_k^T}{\Delta_k^T\sigma_k} -
+\frac{1}{\sigma_k^T\Delta_k} \left( \Delta_k \sigma_k^T H_k + H_k
+\sigma_k\Delta_k^T \right)
+\end{math}
+\end{center}
+\end{algorithme}
+
+\begin{remarques}~
+\begin{itemize}
+  \item DFP et BFGS convergent en au plus $n$ itérations pour une fonction
+  quadratique.
+  \item La convergence de DFP et BFGS est garantie si la suite $H_k$ est
+  régulièrement réinitialisée.
+\end{itemize}
+\end{remarques}
+
+\subsection{Optimisation sous contraintes}
+
+La résolution des problèmes de PNL en pratique fait souvent appel à un peu de
+flair dans le choix de la modélisation (c'est le premier travail de l'ingénieur)
+et se base sur les deux mêmes méthodes principales que la résolution à la main.
+On distingue donc :
+\begin{itemize}
+  \item Les méthodes primales, qui raisonnent directement sur $x$, cherchant à
+  minimiser $f$ en résolvant les équations du théorème de KKT.
+  \item Les méthodes duales, qui cherchent un point selle du Lagrangien et
+  cherchent donc à résoudre le problème dual.
+\end{itemize}
+
+Dans tous les cas, ces méthodes finissent par faire appel aux méthodes
+d'optimisation sans contrainte présentées plus haut.
+
+\subsubsection{Changements de variables}
+
+L'idée est de simplifier le problème pour se ramener à un problème plus
+simple.\\
+
+\noindent Dans le cas de contraintes égalité, il n'y a pas de raison de se
+priver
+d'éliminer certaines variables dès que c'est possible. C'est la généralisation
+du théorème des fonctions implicites :\\
+Si on a $\frac{\partial g}{\partial x} \neq 0$ alors la contrainte $g(x)=0$
+implique qu'il existe un voisinage $U\subset\mathbb{R}^{n-1}$ et une fonction
+$\phi$ définie sur $U$ et à valeurs dans $\mathbb{R}$ telle que :
+\begin{equation*}
+\forall
+(x_1,\ldots,x_{j-1},x_{j+1},\ldots,
+x_n) \in\mathbb{R}^{n-1}\cap U, x_j = \phi(x_1,\ldots,x_{j-1},x_{j+1},\ldots,
+x_n)
+\end{equation*}
+Le problème $\min\limits_{g(x)=0} f(x)$ se ramène donc à :
+\begin{equation*}
+\min\limits_{(x_1,\ldots,x_{j-1},x_{j+1},\ldots,
+x_n) \in\mathbb{R}^{n-1}\cap U} f((x_1,\ldots,x_{j-1}, 
+\phi(x_1,\ldots,x_{j-1},x_{j+1},\ldots, x_n),x_{j+1},\ldots,
+x_n))
+\end{equation*}
+Si $U$ est assez grand, le problème peut se ramener à un problème sans contraintes.\\
+
+\noindent Par ailleurs le problème $\min\limits_{a\leq x\leq b} f(x)$ est
+équivalent au problème $\min\limits_{y\in\mathbb{R}} g(y)$ avec :
+\begin{equation*}
+x = a + (b-a)^2 \sin y
+\end{equation*}
+
+\subsubsection{Méthode des directions réalisables}
+
+Cette catégorie d'algorithmes généralise l'algorithme du
+gradient en calculant à chaque pas l'ensemble des directions admissibles
+$\mathcal{D}_{x_k}(\Omega)$ et en cherchant une direction de descente
+dans $\mathcal{D}_{x_k}(\Omega)$.
+
+\subsubsection{Méthode des pénalités}
+
+L'idée est de résoudre une séquence de problèmes sans contraintes dans lequel on
+pénalise de plus en plus la solution avec les contraintes.
+
+On pose :
+\begin{equation*}
+h_+(x) = \left[
+\begin{array}{c}
+\max\{0,h_1(x)\}\\
+\vdots \\
+\max\{0,h_p(x)\}
+\end{array}
+\right]
+\end{equation*}
+\begin{algorithme}[Méthode de pénalisation]~
+\begin{center}
+\begin{math}
+\left|
+\begin{array}{l}
+F(x) = \|g(x)\|^2 + \|h_+(x)\|^2\\
+(c_i)_{i\in\mathbb{N}}\textrm{ est une suite qui tend vers l'infini}\\
+x_0 = \textrm{ solution de } \min_{x\in\mathbb{R}^n} f(x)\\
+\texttt{Itération }k\\
+\quad (P_k) \textrm{ est le problème }\min_{x\in\mathbb{R}^n} 
+\left(f(x)+c_kF(x)\right)\\
+\quad x_k = \textrm{ solution de }(P_k)
+\end{array}\right.
+\end{math}
+\end{center}
+\end{algorithme}
+
+Si la suite des $x_i$ converge alors sa limite est une solution de :
+\begin{gather*}
+\min\limits_{x\in\mathbb{R}^n} f(x)\\
+h(x) \leq 0\\
+g(x) = 0
+\end{gather*}
+
+\subsubsection{Résolution directe des équations de KKT}
+
+L'algorithme correspond à utiliser une méthode de Newton pour résoudre le
+système d'équations :
+\begin{gather*}
+\frac{\partial L}{\partial x}(x,\lambda,\mu)=0 \\
+\forall i\in[1,q], g_i(x) = 0\\
+\forall j\in[1,p], \mu_j h_j(x) = 0
+\end{gather*}
+
+\subsubsection{Programmation quadratique séquentielle}
+
+L'idée est d'approcher en chaque point $x_k$ le problème en linéarisant les
+contraintes et en développant $f$ au second ordre. On résout ainsi une séquence
+de problèmes quadratiques simples. Chaque problème s'écrit :
+
+\begin{equation*}
+\left(P_k\right) \ : \ \left\{
+\begin{array}{c}
+\min\limits_{u\in\mathbb{R}^n} f(x_k) + \frac{\partial f}{\partial x}(x_k)u +
+\frac{1}{2}u^T \frac{\partial^2 f}{\partial x^2}u\\
+\forall i\in[1,q] g_i(x_k) + \frac{\partial g_i}{\partial x}(x_k)u = 0\\
+\forall j\in[1,p] h_j(x_k) + \frac{\partial h_j}{\partial x}(x_k)u \leq 0
+\end{array}
+\right.
+\end{equation*}
+
+Le nouveau point $x$ s'écrit alors $x_{k+1} = x_k + \hat{u}$.
+\end{document}
