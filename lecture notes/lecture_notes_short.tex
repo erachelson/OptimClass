@@ -129,7 +129,7 @@ $\frac{\partial f}{\partial x}(x) = 0$
 \begin{array}{l}
 \frac{\partial f}{\partial x}(x)=0\\
 \frac{\partial^2 f}{\partial x^2}(x) \textrm{ positive definite}
-\end{array}\right\} \Leftrightarrow x \textrm{ is a local solution of
+\end{array}\right\} \Rightarrow x \textrm{ is a local solution of
 }\left(P_{\mathbb{R}^n}\right)
 \end{math}
 \end{theorem}
@@ -137,7 +137,7 @@ $\frac{\partial f}{\partial x}(x) = 0$
 \noindent Remarks:
 \begin{itemize}
   \item The first order condition is a necessary condition.
-  \item The second order condition is both necessary and sufficient.
+  \item The second order condition is a sufficient condition.
   \item If $f$ is strictly convex over $\mathbb{R}^n$, then the first order condition is both necessary and sufficient.
 \end{itemize}
 
@@ -205,7 +205,7 @@ g(x^*)=0 \\
 \forall v\in\mathcal{D}_{x^*}(\Omega)\setminus\{0\}, v^T \frac{\partial^2
 L}{\partial x^2}(x^*,\lambda^*) v > 0 
 \end{array}
-\right\} \Leftrightarrow x^* \textrm{ is a local minimum of }
+\right\} \Rightarrow x^* \textrm{ is a local minimum of }
 \left(P_\Omega\right)
 \end{equation*}
 \end{enumerate}
@@ -218,7 +218,7 @@ L}{\partial x^2}(x^*,\lambda^*) v > 0
 [1,q] \right\}$ be linearly independent is called \emph{constraint regularity}. If the constraints satisfy this condition in $x$, then $x$ is called \emph{regular}. If $x$ is a local minimum and $x$ is regular, then the Lagrange multipliers are unique.
 \item A point $x$ is regular iff $\nabla g(x)$ has rank $q$.
 \item The condition $g(x^*)=0$ just states that the minimum found must be in the admissible domain and can be rephrased $\nabla_\lambda L(x^*,\lambda^*)=0$ since $\nabla_\lambda L(x,\lambda)=g(x)$
-\item The direct implication ($\Rightarrow$) in the second order conditions actually does not require $x^*$ to be regular (only the reverse implication requires it for the unicity of $\lambda$).
+\item The direct implication ($\Rightarrow$) in the second order conditions actually does not require $x^*$ to be regular (it would however be required for the reverse implication, if it were true, to guarantee the unicity of $\lambda$).
 \item In order to find a minimum to $f$ under constraints, one first tries to solve the system of equations provided by the first order condition ($n+q$ equations, $n+q$ variables). If a minimum of $f$ under constraints exists, then it must verify these equations. Thus, this system of equations provides \emph{candidates} for optimality. Then, for each of these candidates, one verifies if the Lagrangian function is indeed convex in every feasible direction $v^T \frac{\partial^2 L}{\partial x^2}(x^*,\lambda^*) v > 0$. If so, then the candidate is a local minimum. To find the global minimum, one simply compares the values of $f$ in local minima.
 \end{itemize}
 
@@ -263,7 +263,7 @@ g(x^*)=0\\
 \forall v\in \mathcal{D}_{x^*}(\Omega)\setminus\{0\}, v^T \nabla_x^2
 L(x^*,\lambda^*,\mu^*) v > 0 
 \end{array}
-\right\} \Leftrightarrow x^* \textrm{ is a local minimum of } 
+\right\} \Rightarrow x^* \textrm{ is a local minimum of } 
 \left(P_\Omega\right)
 \end{equation*}
 \end{enumerate}
